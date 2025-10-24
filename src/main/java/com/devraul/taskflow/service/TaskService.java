@@ -1,6 +1,8 @@
 package com.devraul.taskflow.service;
 
 import com.devraul.taskflow.dto.TaskDTO;
+import com.devraul.taskflow.model.Priority;
+import com.devraul.taskflow.model.Status;
 import com.devraul.taskflow.model.Task;
 import com.devraul.taskflow.repository.TaskRepository;
 import jakarta.transaction.Transactional;
@@ -8,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,5 +50,32 @@ public class TaskService{
         Task task = taskRepository.findById(id).get();
         return new TaskDTO(task);
     }
+
+    public List<TaskDTO> buscarPorPrioridade(Priority priority){
+        List<Task> tasks = taskRepository.findByPriority(priority);
+        return tasks.stream().map(TaskDTO::new).toList();
+    }
+
+    public List<TaskDTO> buscarPorStatus(Status status){
+        List<Task> tasks = taskRepository.findByStatus(status);
+        return tasks.stream().map(TaskDTO::new).toList();
+    }
+
+    public List<TaskDTO> buscarPorTitulo(String title){
+        List<Task> tasks = taskRepository.findByTitleContainingIgnoreCase(title);
+        return tasks.stream().map(TaskDTO::new).toList();
+    }
+
+    public List<TaskDTO> buscarPorDueTime(LocalDate localDate){
+        List<Task> tasks = taskRepository.findByDueTimeBefore(localDate);
+        return tasks.stream().map(TaskDTO::new).toList();
+    }
+
+    public List<TaskDTO> buscarPorPrioridadeEStatus(Priority priority, Status status){
+        List<Task> tasks = taskRepository.findByPriorityAndStatus(priority, status);
+        return tasks.stream().map(TaskDTO::new).toList();
+    }
+
+
 
 }
