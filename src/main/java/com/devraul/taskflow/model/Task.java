@@ -2,15 +2,15 @@ package com.devraul.taskflow.model;
 
 import com.devraul.taskflow.dto.TaskDTO;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import org.springframework.beans.BeanUtils;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Entity @Getter @Setter @RequiredArgsConstructor
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter @Setter
 @Table(name = "tasks")
 public class Task {
 
@@ -30,8 +30,8 @@ public class Task {
     @Column(name = "priority", nullable = false)
     private Priority priority;
 
-    @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
     private Status status;
 
     @Column(name = "dueTime")
@@ -46,8 +46,17 @@ public class Task {
         this.createdAt = LocalDateTime.now();
     }
 
-    public Task(TaskDTO taskDTO){
-        BeanUtils.copyProperties(taskDTO, this);
+    public Task(TaskDTO taskDTO) {
+        this.title = taskDTO.getTitle();
+        this.description = taskDTO.getDescription();
+        this.priority = (taskDTO.getPriority() != null) ? taskDTO.getPriority() : Priority.LOW;
+        this.status = (taskDTO.getStatus() != null) ? taskDTO.getStatus() : Status.TODO;
+        this.dueTime = taskDTO.getDueTime();
     }
+
+//    public Task(TaskDTO taskDTO){
+////        BeanUtils.copyProperties(taskDTO, this);
+//
+//    }
 
 }

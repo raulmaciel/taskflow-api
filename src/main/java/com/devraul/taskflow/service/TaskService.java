@@ -1,6 +1,7 @@
 package com.devraul.taskflow.service;
 
 import com.devraul.taskflow.dto.TaskDTO;
+import com.devraul.taskflow.exception.TaskNotFoundException;
 import com.devraul.taskflow.model.Priority;
 import com.devraul.taskflow.model.Status;
 import com.devraul.taskflow.model.Task;
@@ -42,12 +43,12 @@ public class TaskService{
 
     @Transactional
     public void excluir(Long id){
-        Task task = taskRepository.findById(id).get();
+        Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException("Tarefa com id " + id + " não encontrada"));
         taskRepository.delete(task);
     }
 
     public TaskDTO buscarPorId(Long id){
-        Task task = taskRepository.findById(id).get();
+        Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException("Tarefa com id " + id + " não encontrada"));
         return new TaskDTO(task);
     }
 
